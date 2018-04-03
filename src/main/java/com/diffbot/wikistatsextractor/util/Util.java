@@ -512,6 +512,7 @@ public class Util {
 				// there it is the moment to look at what we have.
 				String content = s.substring(start_bracket, i);
 				i++;
+
 				if (content.contains(":") || content.startsWith("#"))
 					continue;
 				content = content.trim();
@@ -642,29 +643,45 @@ public class Util {
 
 	/** get the title of the page. */
 	public static String getTitle(String page) {
+                // Chris: if page is empty
 		int start_title = page.indexOf("<title>");
 		int end_title = page.indexOf("</title>", start_title);
-		String title = page.substring(start_title + 7, end_title);
-		title = title.trim();
-		title = unescapeXML(title);
-		return title;
+                try { 
+		    String title = page.substring(start_title + 7, end_title);
+		    title = title.trim();
+		    title = unescapeXML(title);
+		    return title;
+                } catch(Exception e) {
+                    //System.out.println("PAGE: " + page);
+                    //System.out.println("Idx start_title: " + start_title);
+                    //System.out.println("Idx end_title: " + end_title);
+                    return "";
+                }
+            
 	}
 
 	/** return true if the mode of the page is "wikitext" */
 	public static boolean isWikiText(String page) {
 		int index_model = page.indexOf("<model>");
 		/** check if this page is the page of an article. */
-		if (index_model == -1 || !page.substring(index_model, index_model + 30).startsWith("<model>wikitext"))
-			return false;
-		return true;
+                try {
+		    if (page.length() ==0 || index_model == -1 || !page.substring(index_model, index_model + 30).startsWith("<model>wikitext"))
+		    	return false;
+		    return true;
+                } catch(Exception e) {
+                    return false;
+                }
+               
 	}
 
 	/** escape à la wikipédia */
 	public static String escapeWiki(String s) {
+                String origS = s;
 		s = s.replaceAll(" ", "_");
 		s = s.replaceAll("\\t", "_");
 		try {
-			s = URLEncoder.encode(s, "UTF8");
+			//String fake_s = URLEncoder.encode(s, "UTF8");
+			//s = URLEncoder.encode(s, "UTF8");
 			return s;
 		} catch (UnsupportedEncodingException e) {
 			e.printStackTrace();
@@ -712,21 +729,22 @@ public class Util {
 			suffix=Character.toUpperCase(suffix.charAt(0))+suffix.substring(1);
 		
 		// escape the following characters "#%<>?[\]^`{|}
-		StringBuilder sb=new StringBuilder();
-		for (int i=0; i<suffix.length(); i++){
-			char c=suffix.charAt(i);
-			boolean replaced=false;
-			for (int j=0; j<uri_to_replace.length; j++){
-				if (c==uri_to_replace[j]){
-					sb.append(uri_replacement[j]);
-					replaced=true;
-					break;
-				}
-			}
-			if (!replaced)
-				sb.append(c);
-		}
-		suffix=sb.toString();
+                // Chris: escape nothing
+		//StringBuilder sb=new StringBuilder();
+		//for (int i=0; i<suffix.length(); i++){
+		//	char c=suffix.charAt(i);
+		//	boolean replaced=false;
+		//	for (int j=0; j<uri_to_replace.length; j++){
+		//		if (c==uri_to_replace[j]){
+		//			sb.append(uri_replacement[j]);
+		//			replaced=true;
+		//			break;
+		//		}
+		//	}
+		//	if (!replaced)
+		//		sb.append(c);
+		//}
+		//suffix=sb.toString();
 		
 		if (optional_prefix==null)
 			return standard_prefix+suffix;
@@ -741,7 +759,9 @@ public class Util {
 
 		int len = s.length();
 		int nb_token = 0;
-		for (int i = 0; i < len - 1; i++) {
+                // Chris: attempting bugfix
+		// for (int i = 0; i < len - 1; i++) {
+		for (int i = 1; i < len - 1; i++) {
 			if (s.charAt(i) == ',' && s.charAt(i + 1) == ',') {
 				nb_token++;
 				i++;
@@ -753,7 +773,9 @@ public class Util {
 		String[] output = new String[nb_token];
 		int last = 0;
 		nb_token = 0;
-		for (int i = 0; i < len - 1; i++) {
+                // Chris: attempting bugfix -- allow line to start with ',', then look for ',,' separator
+		//for (int i = 0; i < len - 1; i++) {
+		for (int i = 1; i < len - 1; i++) {
 			if (s.charAt(i) == ',' && s.charAt(i + 1) == ',') {
 				output[nb_token] = s.substring(last, i);
 				nb_token++;

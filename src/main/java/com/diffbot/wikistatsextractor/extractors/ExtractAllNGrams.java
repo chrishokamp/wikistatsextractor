@@ -44,7 +44,9 @@ public class ExtractAllNGrams {
 
 		@Override
 		public void doSomethingWithPage(String page) {
-			List<String> paragraphs = Util.getCleanTextFromPage(page, true, true, true,true);
+			//List<String> paragraphs = Util.getCleanTextFromPage(page, true, true, true,true);
+                        // Chris: extract text in the same way we do for building the sf-->uri index
+			List<String> paragraphs = Util.getCleanTextFromPage(page, false, false, false, true);
 
 			if (paragraphs == null)
 				return;

@@ -455,7 +455,11 @@ public class ExtractContextualToken {
 			String line = br.readLine();
 			while (line != null) {
 				String[] split = Util.fastSplit(line);
-				redirections.put(split[0], split[1]);
+                                try {
+				    redirections.put(split[0], split[1]);
+                                } catch(Exception e) {
+                                    System.out.println("Error on line: " + line);
+                                }
 				line = br.readLine();
 			}
 			br.close();
