@@ -679,14 +679,14 @@ public class Util {
                 String origS = s;
 		s = s.replaceAll(" ", "_");
 		s = s.replaceAll("\\t", "_");
-		try {
-			//String fake_s = URLEncoder.encode(s, "UTF8");
-			//s = URLEncoder.encode(s, "UTF8");
-			return s;
-		} catch (UnsupportedEncodingException e) {
-			e.printStackTrace();
-		}
-		return "";
+		//try {
+		//	String fake_s = URLEncoder.encode(s, "UTF8");
+		//	//s = URLEncoder.encode(s, "UTF8");
+		//} catch (UnsupportedEncodingException e) {
+		//	e.printStackTrace();
+		//}
+		//return "";
+		return s;
 	}
 
 	
